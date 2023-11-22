@@ -1,7 +1,8 @@
 import openai
 import streamlit as st
 from instructions import get_content
-from google.cloud import storage, exceptions
+from google.cloud import storage
+from google.cloud.exceptions import NotFound
 import os
 import ssl
 from datetime import datetime
@@ -31,18 +32,15 @@ if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
 
-# Fonction pour sauvegarder un message dans Google Cloud Storage
 def save_message_to_storage(messages, conversation_id):
     bucket_name = "adinterviews"
     object_path = f"conversations/{conversation_id}.txt"
 
-    
- # Check if the file already exists, and create it if it doesn't
+    # Check if the file already exists, and create it if it doesn't
     try:
         bucket = storage_client.get_bucket(bucket_name)
-    except storage.exceptions.NotFound:
+    except NotFound:
         bucket = storage_client.create_bucket(bucket_name)
-
 
     # Concatenate all non-system messages into a single string
     conversation_content = ""
@@ -55,7 +53,6 @@ def save_message_to_storage(messages, conversation_id):
     blob.upload_from_string(conversation_content, content_type="text/plain")
 
     print(f"Conversation saved to Google Cloud Storage for conversation ID {conversation_id}")
-
 
 # Initialize chat history
 if "messages" not in st.session_state:
