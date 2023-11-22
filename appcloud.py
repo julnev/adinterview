@@ -21,11 +21,31 @@ st.title("Meet the Experience Innovation Team ///")
 """Ask me anything :)"""
 
 openai.api_key = st.secrets["OPENAI_API_KEY"]
-private_key_id = st.secrets["private_key_id"]
-private_key = st.secrets["private_key"]
 
-# Créez une connexion au stockage Google Cloud
-storage_client = storage.Client.from_service_account_json("brave-reason-403615-cbb6f83e50e4.json")
+# Accéder aux secrets Streamlit
+google_cloud_storage_secrets = st.secrets["google_cloud_storage"]
+
+# Accéder aux valeurs individuelles
+project_id = google_cloud_storage_secrets["project_id"]
+private_key_id = google_cloud_storage_secrets["private_key_id"]
+private_key = google_cloud_storage_secrets["private_key"]
+
+# Définir les informations d'identification Google Cloud Storage
+credentials = {
+    "project_id": project_id,
+    "private_key_id": private_key_id,
+    "private_key": private_key,
+    "client_email": google_cloud_storage_secrets["client_email"],
+    "client_id": google_cloud_storage_secrets["client_id"],
+    "auth_uri": google_cloud_storage_secrets["auth_uri"],
+    "token_uri": google_cloud_storage_secrets["token_uri"],
+    "auth_provider_x509_cert_url": google_cloud_storage_secrets["auth_provider_x509_cert_url"],
+    "client_x509_cert_url": google_cloud_storage_secrets["client_x509_cert_url"]
+}
+
+# Utiliser le client de stockage
+storage_client = storage.Client(project=project_id, credentials=credentials)
+
 
 content = get_content()
 
