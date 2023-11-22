@@ -21,6 +21,8 @@ st.title("Meet the Experience Innovation Team ///")
 """Ask me anything :)"""
 
 openai.api_key = st.secrets["OPENAI_API_KEY"]
+private_key_id = st.secrets["private_key_id"]
+private_key = st.secrets["private_key"]
 
 # Créez une connexion au stockage Google Cloud
 storage_client = storage.Client.from_service_account_json("brave-reason-403615-cbb6f83e50e4.json")
