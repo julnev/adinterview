@@ -2,6 +2,7 @@ import openai
 import streamlit as st
 from instructions import get_content
 from google.cloud import storage
+from google.auth import load_credentials_from_file
 from google.cloud.exceptions import NotFound
 import os
 import ssl
