@@ -2,8 +2,8 @@ import openai
 import streamlit as st
 from instructions import get_content
 from google.cloud import storage
-from google.auth import load_credentials_from_file
 from google.cloud.exceptions import NotFound
+from google.auth import exceptions, load_credentials_from_file
 import os
 import ssl
 from datetime import datetime
@@ -26,6 +26,16 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 # Accéder aux secrets Streamlit
 google_cloud_storage_secrets = st.secrets["google_cloud_storage"]
 
+# Charger les informations d'identification depuis les secrets Streamlit
+credentials, project = load_credentials_from_file(google_cloud_storage_secrets)
+
+try:
+    # Utiliser le client de stockage
+    storage_client = storage.Client(project=project, credentials=credentials)
+except exceptions.GoogleAuthError as e:
+    # Handle authentication error
+    print(f"Authentication failed: {e}")
+    
 # Accéder aux valeurs individuelles
 project_id = google_cloud_storage_secrets["project_id"]
 private_key_id = google_cloud_storage_secrets["private_key_id"]
