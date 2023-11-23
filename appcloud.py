@@ -2,9 +2,6 @@ import openai
 import streamlit as st
 from instructions import get_content
 from google.cloud import storage
-from google.auth import exceptions
-from google.auth.transport.requests import Request
-from google.auth.transport.requests import AuthorizedSession
 from google.oauth2 import service_account
 import os
 import ssl
@@ -40,17 +37,20 @@ auth_provider_x509_cert_url = google_cloud_storage_secrets["auth_provider_x509_c
 client_x509_cert_url = google_cloud_storage_secrets["client_x509_cert_url"]
 
 # Créer un objet de type ServiceAccountCredentials
-credentials = ServiceAccountCredentials.from_json_keyfile_dict({
+credentials = service_account.Credentials.from_service_account_info({
     "client_email": client_email,
     "private_key": private_key,
     "private_key_id": private_key_id,
     "client_id": client_id,
-    "type": google_cloud_storage_secrets["type"]
+    "auth_uri": auth_uri,
+    "token_uri": token_uri,
+    "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
+    "client_x509_cert_url": client_x509_cert_url
 }, ["https://www.googleapis.com/auth/cloud-platform"])
 
 try:
     # Utiliser le client de stockage
-    storage_client = storage.Client(credentials=credentials)
+    storage_client = storage.Client(project=project_id, credentials=credentials)
 except exceptions.GoogleAuthError as e:
     # Handle authentication error
     print(f"Authentication failed: {e}")
