@@ -26,31 +26,23 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 google_cloud_storage_secrets = st.secrets["google_cloud_storage"]
 
 # Accéder aux valeurs individuelles
-project_id = google_cloud_storage_secrets["project_id"]
-private_key_id = google_cloud_storage_secrets["private_key_id"]
-private_key = google_cloud_storage_secrets["private_key"]
 client_email = google_cloud_storage_secrets["client_email"]
-client_id = google_cloud_storage_secrets["client_id"]
-auth_uri = google_cloud_storage_secrets["auth_uri"]
-token_uri = google_cloud_storage_secrets["token_uri"]
-auth_provider_x509_cert_url = google_cloud_storage_secrets["auth_provider_x509_cert_url"]
-client_x509_cert_url = google_cloud_storage_secrets["client_x509_cert_url"]
+private_key = google_cloud_storage_secrets["private_key"]
+project_id = google_cloud_storage_secrets["project_id"]
 
-# Créer un objet de type ServiceAccountCredentials
-credentials = service_account.Credentials.from_service_account_info({
-    "client_email": client_email,
-    "private_key": private_key,
-    "private_key_id": private_key_id,
-    "client_id": client_id,
-    "auth_uri": auth_uri,
-    "token_uri": token_uri,
-    "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
-    "client_x509_cert_url": client_x509_cert_url
-}, ["https://www.googleapis.com/auth/cloud-platform"])
+# Créer un objet de type Credentials
+credentials = service_account.Credentials.from_service_account_info(
+    {
+        "client_email": client_email,
+        "private_key": private_key,
+        "project_id": project_id,
+    },
+    scopes=["https://www.googleapis.com/auth/cloud-platform"],
+)
 
 try:
     # Utiliser le client de stockage
-    storage_client = storage.Client(project=project_id, credentials=credentials)
+    storage_client = storage.Client(credentials=credentials)
 except exceptions.GoogleAuthError as e:
     # Handle authentication error
     print(f"Authentication failed: {e}")
