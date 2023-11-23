@@ -36,6 +36,7 @@ credentials = service_account.Credentials.from_service_account_info(
         "client_email": client_email,
         "private_key": private_key,
         "project_id": project_id,
+        "token_uri": "https://oauth2.googleapis.com/token",
     },
     scopes=["https://www.googleapis.com/auth/cloud-platform"],
 )
