@@ -2,7 +2,10 @@ import openai
 import streamlit as st
 from instructions import get_content
 from google.cloud import storage
-from oauth2client.service_account import ServiceAccountCredentials
+from google.auth import exceptions
+from google.auth.transport.requests import Request
+from google.auth.transport.requests import AuthorizedSession
+from google.oauth2 import service_account
 import os
 import ssl
 from datetime import datetime
